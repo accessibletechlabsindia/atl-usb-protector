@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATL USB Protector - Version 1.0 Documentation</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 950px; margin: auto; padding: 20px; background-color: #f4f7f9; }
+        header { background: #002b5e; color: #ffffff; padding: 35px; text-align: center; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+        h1 { margin: 0; font-size: 2.8em; letter-spacing: 1px; }
+        h2 { color: #002b5e; border-bottom: 2px solid #002b5e; padding-bottom: 5px; margin-top: 35px; font-size: 1.8em; }
+        h3 { color: #d11010; margin-top: 25px; font-size: 1.3em; }
+        .feature-card { background: white; padding: 25px; margin: 20px 0; border-radius: 8px; border-left: 6px solid #002b5e; box-shadow: 0 3px 6px rgba(0,0,0,0.08); }
+        .update-card { background: #eef2f7; padding: 25px; margin: 20px 0; border-radius: 8px; border-left: 6px solid #d11010; box-shadow: 0 3px 6px rgba(0,0,0,0.08); }
+        code { background: #e2e8f0; padding: 3px 8px; border-radius: 4px; font-weight: bold; color: #d11010; font-size: 1.05em; }
+        ul { list-style-type: square; padding-left: 20px; }
+        li { margin-bottom: 10px; }
+        strong { color: #002b5e; }
+        footer { text-align: center; margin-top: 60px; font-size: 0.95em; color: #555; padding-top: 20px; border-top: 1px solid #ccc; }
+        p { text-align: justify; font-size: 1.05em; }
+        a { color: #002b5e; text-decoration: none; font-weight: bold; }
+        a:hover { text-decoration: underline; color: #d11010; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>ATL USB Protector v1.0</h1>
+    <p style="font-size: 1.2em; margin-top: 10px;">Enterprise-Grade USB Security for NVDA Screen Reader</p>
+</header>
+
+<h2>Overview</h2>
+<p>The <strong>ATL USB Protector</strong> is a flagship security plugin engineered specifically by <strong>Accessible Tech Labs India</strong> for NVDA screen reader users. Designed for visually impaired professionals, students, and power users, this add-on acts as a silent, high-performance security guard for your system. It actively monitors your computer for newly connected USB drives and automatically neutralizes potential threats by safely ejecting or locking unauthorized drives, ensuring your data and privacy remain 100% secure.</p>
+
+<div class="update-card">
+    <h2>Core Features & Capabilities</h2>
+    <p>This initial release brings powerful, automated security features directly to your screen reader, bypassing complex Windows security settings.</p>
+
+    <h3>1. Auto-Eject (Maximum Security)</h3>
+    <p>Instantly and safely ejects any unknown or unauthorized USB drive the moment it is plugged in. The system will not even mount the drive, ensuring zero chance of malware execution or data theft.</p>
+
+    <h3>2. Read-Only Lock (Registry-Level Protection)</h3>
+    <p>Uses deep Windows Registry policies (<code>StorageDevicePolicies</code>) to lock unauthorized USB drives in Read-Only mode. You can safely read files from the USB, but no viruses can transfer to your system, and no one can copy your personal data onto the USB.</p>
+
+    <h3>3. Smart Grace Period (10-Second Whitelist)</h3>
+    <p>When an unknown USB is inserted, the add-on provides a smart 10-second auditory grace period. Simply press a quick shortcut key within this timeframe to instantly add the drive to your Trusted List, bypassing the need to open complex settings.</p>
+
+    <h3>4. Trusted USB Management</h3>
+    <p>Easily manage your personal USB drives. Once a drive is added to the Trusted List, it will always mount normally without any interruptions or security blocks.</p>
+
+    <h3>5. One-Click Global Unlock</h3>
+    <p>If you have locked drives in Read-Only mode, you can instantly restore all USB drives to their normal Read/Write state using the "Unlock All USB Drives" button directly from the settings menu.</p>
+
+    <h3>6. Native NVDA Settings Integration</h3>
+    <p>Features a fully accessible, dynamic GUI integrated directly into the native NVDA Preferences menu. The settings panel intelligently hides advanced options when protection is disabled, ensuring a clean and clutter-free experience.</p>
+</div>
+
+<div class="feature-card">
+    <h2>How to Configure</h2>
+    <ul>
+        <li>Open <strong>NVDA Menu -> Preferences -> Settings</strong>.</li>
+        <li>Arrow down to the <strong>ATL USB Protector</strong> category.</li>
+        <li>Check the <strong>"Enable USB Protection"</strong> box.</li>
+        <li>Select your preferred default action for unauthorized USBs:
+            <ul>
+                <li><strong>Eject:</strong> Safely removes the drive immediately.</li>
+                <li><strong>Read-Only:</strong> Locks the drive to prevent data modification (requires UAC Admin approval).</li>
+                <li><strong>Alert:</strong> Only provides an auditory security warning without blocking the drive.</li>
+            </ul>
+        </li>
+        <li>Insert your personal USB drive and click <strong>"Add Current USB to Trusted"</strong> to whitelist it.</li>
+    </ul>
+</div>
+
+<h2>Keyboard Shortcuts & Gestures</h2>
+<table style="width:100%; border-collapse: collapse; background: white; margin-top: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+    <tr style="background: #002b5e; color: white; text-align: left;">
+        <th style="padding: 12px; border: 1px solid #ccc;">Action / Tool</th>
+        <th style="padding: 12px; border: 1px solid #ccc;">Shortcut</th>
+    </tr>
+    <tr><td style="padding: 12px; border: 1px solid #ccc;"><strong>Quick Add to Trusted List</strong><br><span style="font-size: 0.9em; color: #555;">(Press within 10 seconds of inserting an unknown USB)</span></td><td style="padding: 12px; border: 1px solid #ccc;"><code>Alt+A</code></td></tr>
+</table>
+<p style="margin-top: 15px; font-style: italic; color: #555;">Note: You can access our quick support, website, and donation links directly via NVDA Menu -> Preferences -> Settings -> ATL USB Protector.</p>
+
+<footer>
+    <p>&copy; 2026 Accessible Tech Labs India. Pioneering digital inclusion. Learn. Empower. Stay Safe. Grow Digitally.</p>
+</footer>
+
+</body>
+</html>
