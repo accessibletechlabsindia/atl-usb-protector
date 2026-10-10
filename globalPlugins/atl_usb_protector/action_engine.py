@@ -1,5 +1,6 @@
 import subprocess
 import ui
+import wx
 import win32file
 import win32api
 import ctypes
@@ -12,29 +13,32 @@ def execute_action(drive, action):
 	if win32file.GetDriveType(drive) != win32file.DRIVE_REMOVABLE:
 		return
 	drive_letter = drive.replace("\\", "")
+	drive_char = drive_letter[0].upper()
 	if action == "eject":
 		try:
 			ps_command = f"(New-Object -comObject Shell.Application).Namespace(17).ParseName('{drive_letter}').InvokeVerb('Eject')"
 			subprocess.run(["powershell", "-WindowStyle", "Hidden", "-Command", ps_command], creationflags=subprocess.CREATE_NO_WINDOW)
-			ui.message("Warning! An unauthorized USB drive was detected and has been safely ejected to protect your system.")
+			wx.CallAfter(ui.message, "Warning! An unauthorized USB drive was detected and has been safely ejected to protect your system.")
 		except:
-			ui.message("Error: Failed to eject the unauthorized USB drive.")
+			wx.CallAfter(ui.message, "Error: Failed to eject the unauthorized USB drive.")
 	elif action == "readonly":
 		try:
-			script_dp = f"select volume {drive_letter[0]}\nattributes disk set readonly\nattributes volume set readonly\nexit\n"
-			dp_path = os.path.join(os.environ["TEMP"], "atl_lock.txt")
+			script_dp = f"select volume {drive_char}\nattributes disk set readonly\nattributes volume set readonly\nexit\n"
+			dp_path = os.path.join(os.environ["TEMP"], f"atl_lock_{drive_char}.txt")
 			with open(dp_path, "w") as f:
 				f.write(script_dp)
 			bat_script = f'@echo off\nreg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\StorageDevicePolicies" /v WriteProtect /t REG_DWORD /d 1 /f\ndiskpart /s "{dp_path}"\n'
-			bat_path = os.path.join(os.environ["TEMP"], "atl_lock.bat")
+			bat_path = os.path.join(os.environ["TEMP"], f"atl_lock_{drive_char}.bat")
 			with open(bat_path, "w") as f:
 				f.write(bat_script)
-			ctypes.windll.shell32.ShellExecuteW(None, "runas", bat_path, None, None, 0)
-			ui.message("Warning! An unauthorized USB drive was detected. Please grant Administrator permission in the UAC prompt to lock it in Read-Only mode.")
+			wx.CallAfter(ui.message, "Please grant Administrator permission in the UAC prompt to lock the USB drive.")
+			ret = ctypes.windll.shell32.ShellExecuteW(None, "runas", bat_path, None, None, 0)
+			if ret <= 32:
+				wx.CallAfter(ui.message, "Operation cancelled. Administrator permission was denied.")
 		except:
-			ui.message("Error: Failed to lock the USB drive in Read-Only mode.")
+			wx.CallAfter(ui.message, "Error: Failed to lock the USB drive in Read-Only mode.")
 	else:
-		ui.message("Security Alert! An unknown USB drive has been connected to your system.")
+		wx.CallAfter(ui.message, "Security Alert! An unknown USB drive has been connected to your system.")
 
 def is_usb_locked():
 	try:
@@ -63,7 +67,9 @@ def unlock_usb_drives():
 		bat_path = os.path.join(os.environ["TEMP"], "atl_unlock.bat")
 		with open(bat_path, "w") as f:
 			f.write(bat_script)
-		ctypes.windll.shell32.ShellExecuteW(None, "runas", bat_path, None, None, 0)
+		ret = ctypes.windll.shell32.ShellExecuteW(None, "runas", bat_path, None, None, 0)
+		if ret <= 32:
+			return False
 		return True
 	except:
 		return False

@@ -3,15 +3,13 @@ import time
 import win32api
 import win32file
 import ui
+import wx
 from . import action_engine
 from . import config_manager
 
 class USBDetector:
 	paused = False
-	pending_drive = None
-	pending_serial = None
-	pending_display_name = None
-	timer = None
+	pending_usbs = {}
 
 	def __init__(self):
 		self.monitoring = False
@@ -50,8 +48,9 @@ class USBDetector:
 
 	def stop_monitoring(self):
 		self.monitoring = False
-		if USBDetector.timer:
-			USBDetector.timer.cancel()
+		for drive, info in list(USBDetector.pending_usbs.items()):
+			info['timer'].cancel()
+		USBDetector.pending_usbs.clear()
 
 	def monitor_loop(self):
 		while self.monitoring:
@@ -75,24 +74,31 @@ class USBDetector:
 					is_trusted = True
 					break
 			if is_trusted:
-				ui.message("Trusted USB drive connected.")
+				wx.CallAfter(ui.message, "Trusted USB drive connected.")
 			else:
 				if conf["action"] == "alert":
 					action_engine.execute_action(drive, "alert")
 				else:
-					USBDetector.pending_drive = drive
-					USBDetector.pending_serial = serial
-					USBDetector.pending_display_name = display_name
-					ui.message("Security Alert! Unknown USB detected. Press Alt+A within 10 seconds to add it to the trusted list, otherwise it will be blocked.")
-					if USBDetector.timer:
-						USBDetector.timer.cancel()
-					USBDetector.timer = threading.Timer(10.0, self.execute_pending)
-					USBDetector.timer.start()
+					wx.CallAfter(ui.message, "Security Alert! Unknown USB detected. Press Alt+A within 10 seconds to add it to the trusted list, otherwise it will be blocked.")
+					if drive in USBDetector.pending_usbs:
+						USBDetector.pending_usbs[drive]['timer'].cancel()
+					
+					timer = threading.Timer(10.0, self.execute_pending, args=[drive])
+					USBDetector.pending_usbs[drive] = {
+						'serial': serial,
+						'display_name': display_name,
+						'timer': timer
+					}
+					timer.start()
 
-	def execute_pending(self):
-		if USBDetector.pending_drive:
-			conf = config_manager.get_config()
-			action_engine.execute_action(USBDetector.pending_drive, conf["action"])
-			USBDetector.pending_drive = None
-			USBDetector.pending_serial = None
-			USBDetector.pending_display_name = None
+	def execute_pending(self, drive):
+		if drive in USBDetector.pending_usbs:
+			current_drives = self.get_current_drives()
+			if drive in current_drives:
+				conf = config_manager.get_config()
+				action_engine.execute_action(drive, conf["action"])
+			else:
+				wx.CallAfter(ui.message, "USB drive was removed before any action was taken. System is safe.")
+			
+			if drive in USBDetector.pending_usbs:
+				del USBDetector.pending_usbs[drive]
